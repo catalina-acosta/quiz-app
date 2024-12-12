@@ -24,7 +24,9 @@
             <div class="card-body" id="endScreen" style="display: none;">
                 <div class="text-center">Game Over</div>
                 <div class="text-center">you answered <b id="answerCounter">xxx</b> of <b id="totalQuestionsEndScreen"></b>  questions correctly</div>
-                <button type="button" id="playAgainButton" class="btn btn-primary" onclick="restarGame()">play again</button>
+                <div class="play-again-btn-container">
+                    <button type="button" id="playAgainButton" class="btn btn-primary" onclick="restartGame()">play again</button>
+                </div>
 
             </div>
             <div class="card-body" id="questionBody">

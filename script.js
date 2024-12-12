@@ -43,6 +43,8 @@ let questions = [
 
 let currentQuestion = 0;
 let counterAnswers = 0;
+let audioSuccess = new Audio(src ='assets/sounds/right.mp3');
+let audioFail = new Audio(src ='assets/sounds/wrong.mp3');
 
 function init(){
     document.getElementById("totalQuestions").innerHTML = questions.length;
@@ -50,26 +52,16 @@ function init(){
 }
 
 function showQuestion (){
-    if(currentQuestion >= questions.length) {
-        document.getElementById('endScreen').style = "";
-        document.getElementById('questionBody').style = "display: none";
-        document.getElementById("totalQuestionsEndScreen").innerHTML = questions.length;
-        document.getElementById("answerCounter").innerHTML = counterAnswers;
-        document.getElementById("headerImg").src = "./assets/img/trophy.png";
-        
+    if(gameIsOver()) {
+        showEndScreen();
     } else {
-        let question = questions[currentQuestion];
-        let percent  = Math.round(((currentQuestion + 1) / questions.length) * 100);
-        document.getElementById("progressBar").innerHTML = `${percent}%`;
-        document.getElementById("progressBar").style = `width: ${percent}%`;
-
-        document.getElementById("currentQuestion").innerHTML = currentQuestion + 1;
-        document.getElementById("questionText").innerHTML = question['question'];
-        document.getElementById("answer_1").innerHTML = question['answer_1'];
-        document.getElementById("answer_2").innerHTML = question['answer_2'];
-        document.getElementById("answer_3").innerHTML = question['answer_3'];
-        document.getElementById("answer_4").innerHTML = question['answer_4'];
+        calculateProgress();
+        updateToNextQuestion();
     }
+}
+
+function gameIsOver() {
+    return currentQuestion >= questions.length;
 }
 
 function answer(selection) {
@@ -80,10 +72,12 @@ function answer(selection) {
     if (selectionQuestionNumber == question['correctAnswer']) {
         document.getElementById(selection).classList.add('bg-success');
         counterAnswers++;
+        audioSuccess.play();
 
     } else {
         document.getElementById(selection).classList.add('bg-danger');
         document.getElementById(idFromRightAnswer).classList.add('bg-success');
+        audioFail.play();
     }
     document.getElementById('nextButton').disabled = false;
 }
@@ -93,10 +87,7 @@ function nextQuestion() {
     showQuestion();
     document.getElementById('nextButton').disabled = true;
     resetAnswerButtons();
-    
-
 }
-
 
 function resetAnswerButtons() {
     document.getElementById('answer_1').classList.remove('bg-danger');
@@ -107,4 +98,37 @@ function resetAnswerButtons() {
     document.getElementById('answer_3').classList.remove('bg-success');
     document.getElementById('answer_4').classList.remove('bg-danger');
     document.getElementById('answer_4').classList.remove('bg-success');
+}
+
+function restartGame(){
+    document.getElementById('endScreen').style = "display: none";
+    document.getElementById('questionBody').style = "";
+    document.getElementById("headerImg").src = "./assets/img/monkeys-7212290_1280.jpg";
+    currentQuestion = 0;
+    counterAnswers = 0;
+    init();
+}
+
+function showEndScreen() {
+    document.getElementById("endScreen").style = "";
+    document.getElementById("questionBody").style = "display: none";
+    document.getElementById("totalQuestionsEndScreen").innerHTML = questions.length;
+    document.getElementById("answerCounter").innerHTML = counterAnswers;
+    document.getElementById("headerImg").src = "./assets/img/trophy.png";
+}
+
+function updateToNextQuestion() {
+    let question = questions[currentQuestion];
+    document.getElementById("currentQuestion").innerHTML = currentQuestion + 1;
+    document.getElementById("questionText").innerHTML = question['question'];
+    document.getElementById("answer_1").innerHTML = question['answer_1'];
+    document.getElementById("answer_2").innerHTML = question['answer_2'];
+    document.getElementById("answer_3").innerHTML = question['answer_3'];
+    document.getElementById("answer_4").innerHTML = question['answer_4'];
+}
+
+function calculateProgress() {
+    let percent  = Math.round(((currentQuestion + 1) / questions.length) * 100);
+    document.getElementById("progressBar").innerHTML = `${percent}%`;
+    document.getElementById("progressBar").style = `width: ${percent}%`;
 }
